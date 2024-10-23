@@ -68,7 +68,17 @@ bool ModelCreator::Create(model_parameters, System *system)
     Stl_element.SetName("Settling element (1)");
     Stl_element.SetType("Settling element");
     Stl_element.SetVal("Coagulant:concentration",0);
-    Stl_element.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/SettlingOHQ-master/Settling/coagulant_mfr.txt");
+
+    CTimeSeries<double> CoagNS;
+    CoagNS.CreateOUProcess(0,100,0.05,1.5);
+    vector<double> c_params; c_params.push_back(2.5); c_params.push_back(0.6);
+    CTimeSeries<double> Coag = CoagNS.MapfromNormalScoreToDistribution("lognormal", c_params);
+    //Reactor.Variable("Coagulant:external_mass_flow_timeseries")->SetTimeSeries(Coag);
+    Coag.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/coagulant_mfr.csv");
+    Stl_element.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/SettlingOHQ-master/Settling/coagulant_mfr.csv");
+
+    //Stl_element.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/SettlingOHQ-master/Settling/coagulant_mfr.txt");
+
     Stl_element.SetVal("Settled_Particles:concentration",0);
     Stl_element.SetVal("Solids:concentration",0);
     Stl_element.SetVal("Storage",20);
@@ -99,8 +109,28 @@ bool ModelCreator::Create(model_parameters, System *system)
     Reactor.SetVal("Storage",0.1);
     Reactor.SetVal("x",600);
     Reactor.SetVal("y",400);
-    Reactor.SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.txt");
+
+    CTimeSeries<double> SolidConcentrationNS;
+    SolidConcentrationNS.CreateOUProcess(0,100,0.05,1);
+    vector<double> params; params.push_back(3); params.push_back(1);
+    CTimeSeries<double> SolidConcentration = SolidConcentrationNS.MapfromNormalScoreToDistribution("lognormal", params);
+    //Reactor.Variable("Solids:inflow_concentration")->SetTimeSeries(SolidConcentration);
+    SolidConcentration.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.csv");
+    Reactor.SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.csv");
+
+    //Reactor.SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.txt");
+
+    /*CTimeSeries<double> InflowNS;
+    InflowNS.CreateOUProcess(0,100,0.05,0.5);
+    vector<double> i_params; i_params.push_back(1.5); i_params.push_back(0.7);
+    CTimeSeries<double> Inflow = InflowNS.MapfromNormalScoreToDistribution("lognormal", i_params);
+    //Reactor.Variable("inflow")->SetTimeSeries(Inflow);
+    Inflow.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
+    Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
+    */
+
     Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
+
     system->AddBlock(Reactor,false);
     //system->block("Reactor (1)")->SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.txt");
     //system->block("Reactor (1)")->SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");

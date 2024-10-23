@@ -9,11 +9,23 @@
 int main(int argc, char *argv[])
 {
 
-    CTimeSeries<double> OUEx1, OUEx2;
+    /*CTimeSeries<double> OUEx1, OUEx2;
     OUEx1.CreateOUProcess(0,10,0.05,0.2);
     OUEx2.CreateOUProcess(0,10,0.05,5);
-    OUEx1.writefile("/home/behzad/Projects/Settling_Models/OUEx1.txt");
-    OUEx2.writefile("/home/behzad/Projects/Settling_Models/OUEx2.txt");
+    vector<double> logparams; logparams.push_back(1); logparams.push_back(0.5);
+    vector<double> expparams; expparams.push_back(3);
+    CTimeSeries<double> OUEx1Log = OUEx1.MapfromNormalScoreToDistribution("lognormal", logparams);
+    CTimeSeries<double> OUEx2Log = OUEx2.MapfromNormalScoreToDistribution("lognormal", logparams);
+
+    CTimeSeries<double> OUEx1Exp = OUEx1.MapfromNormalScoreToDistribution("exp", expparams);
+    CTimeSeries<double> OUEx2Exp = OUEx2.MapfromNormalScoreToDistribution("exp", expparams);
+
+    OUEx1Log.writefile("/home/behzad/Projects/Settling_Models/OUEx1Log.txt");
+    OUEx2Log.writefile("/home/behzad/Projects/Settling_Models/OUEx2Log.txt");
+
+    OUEx1Exp.writefile("/home/behzad/Projects/Settling_Models/OUEx1Exp.txt");
+    OUEx2Exp.writefile("/home/behzad/Projects/Settling_Models/OUEx2Exp.txt");
+*/
 
     model_parameters mp;
     mp.nr = 6;
