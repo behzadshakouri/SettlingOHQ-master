@@ -11,8 +11,8 @@ ModelCreator::ModelCreator()
 bool ModelCreator::Create(model_parameters, System *system)
 {
     system->GetQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/main_components.json");
-    system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/unsaturated_soil.json");
-    system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/Well.json");
+    //system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/unsaturated_soil.json");
+    //system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/Well.json");
     system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/wastewater.json");
     system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/mass_transfer.json");
     system->ReadSystemSettingsTemplate("/home/behzad/Projects/OpenHydroQual/resources/settings.json");
@@ -62,12 +62,13 @@ bool ModelCreator::Create(model_parameters, System *system)
     Settling.SetProperty("rate_expression","Settling_rate_coeff*Solids*Coagulant/(Coagulant+Ks)");
     system->AddReaction(Settling,false);
 
+
     Block Stl_element;
     Stl_element.SetQuantities(system, "Settling element");
     Stl_element.SetName("Settling element (1)");
     Stl_element.SetType("Settling element");
     Stl_element.SetVal("Coagulant:concentration",0);
-    Stl_element.SetVal("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/Settling_Models/coagulant_mfr.txt");
+    Stl_element.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/SettlingOHQ-master/Settling/coagulant_mfr.txt");
     Stl_element.SetVal("Settled_Particles:concentration",0);
     Stl_element.SetVal("Solids:concentration",0);
     Stl_element.SetVal("Storage",20);
@@ -85,7 +86,7 @@ bool ModelCreator::Create(model_parameters, System *system)
     f_head.SetVal("Solids:concentration",0);
     f_head.SetVal("Storage",100000);
     f_head.SetVal("x",1000);
-    f_head.SetVal("y",800);
+    f_head.SetVal("y",400);
     system->AddBlock(f_head,false);
 
     Block Reactor;
@@ -97,12 +98,12 @@ bool ModelCreator::Create(model_parameters, System *system)
     Reactor.SetVal("Solids:concentration",0);
     Reactor.SetVal("Storage",0.1);
     Reactor.SetVal("x",600);
-    Reactor.SetVal("y",800);
-    Reactor.SetVal("Solids:inflow_concentration","/home/behzad/Projects/Settling_Models/inflow_concentration.txt");
-    Reactor.SetVal("inflow","/home/behzad/Projects/Settling_Models/inflow.txt");
+    Reactor.SetVal("y",400);
+    Reactor.SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.txt");
+    Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
     system->AddBlock(Reactor,false);
-    //system->block("Reactor (1)")->SetProperty("Solids:inflow_concentration","/home/behzad/Projects/Settling_Models/inflow_concentration.txt");
-    //system->block("Reactor (1)")->SetProperty("inflow","/home/behzad/Projects/Settling_Models/inflow.txt");
+    //system->block("Reactor (1)")->SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.txt");
+    //system->block("Reactor (1)")->SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
 
     Link link1;
     link1.SetQuantities(system, "Fixed flow");

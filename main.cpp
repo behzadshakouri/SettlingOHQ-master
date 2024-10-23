@@ -9,6 +9,12 @@
 int main(int argc, char *argv[])
 {
 
+    CTimeSeries<double> OUEx1, OUEx2;
+    OUEx1.CreateOUProcess(0,10,0.05,0.2);
+    OUEx2.CreateOUProcess(0,10,0.05,5);
+    OUEx1.writefile("/home/behzad/Projects/Settling_Models/OUEx1.txt");
+    OUEx2.writefile("/home/behzad/Projects/Settling_Models/OUEx2.txt");
+
     model_parameters mp;
     mp.nr = 6;
     mp.nz = 6;
