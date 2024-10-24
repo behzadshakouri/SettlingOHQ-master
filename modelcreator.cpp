@@ -1,6 +1,8 @@
 #include "modelcreator.h"
 #include "System.h"
 #include "QString"
+#include <iostream>
+using namespace std;
 
 ModelCreator::ModelCreator()
 {
@@ -70,7 +72,8 @@ bool ModelCreator::Create(model_parameters, System *system)
     Stl_element.SetVal("Coagulant:concentration",0);
 
     CTimeSeries<double> CoagNS;
-    CoagNS.CreateOUProcess(0,100,0.05,1.5);
+    CoagNS.CreateOUProcess(0,100,0.05,1);
+    CoagNS.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/coagulant_mfr_NS.csv");
     vector<double> c_params; c_params.push_back(2.5); c_params.push_back(0.6);
     CTimeSeries<double> Coag = CoagNS.MapfromNormalScoreToDistribution("lognormal", c_params);
     //Reactor.Variable("Coagulant:external_mass_flow_timeseries")->SetTimeSeries(Coag);
@@ -112,6 +115,7 @@ bool ModelCreator::Create(model_parameters, System *system)
 
     CTimeSeries<double> SolidConcentrationNS;
     SolidConcentrationNS.CreateOUProcess(0,100,0.05,1);
+    SolidConcentrationNS.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration_NS.csv");
     vector<double> params; params.push_back(3); params.push_back(1);
     CTimeSeries<double> SolidConcentration = SolidConcentrationNS.MapfromNormalScoreToDistribution("lognormal", params);
     //Reactor.Variable("Solids:inflow_concentration")->SetTimeSeries(SolidConcentration);
@@ -121,13 +125,31 @@ bool ModelCreator::Create(model_parameters, System *system)
     //Reactor.SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.txt");
 
     /*CTimeSeries<double> InflowNS;
-    InflowNS.CreateOUProcess(0,100,0.05,0.5);
+    InflowNS.CreateOUProcess(0,100,0.05,1);
     vector<double> i_params; i_params.push_back(1.5); i_params.push_back(0.7);
     CTimeSeries<double> Inflow = InflowNS.MapfromNormalScoreToDistribution("lognormal", i_params);
     //Reactor.Variable("inflow")->SetTimeSeries(Inflow);
     Inflow.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
     Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
     */
+
+
+    // Providing a seed value
+    srand((unsigned) time(NULL));
+
+    // Get a random number
+    int random = rand();
+
+    int scaled_random=10*random;
+
+    int inflow_rc[2][2];
+
+    inflow_rc[0][0]= 0;
+    inflow_rc[0][1]= 0;
+    inflow_rc[1][0]= 100;
+    inflow_rc[1][1]= scaled_random;
+
+    inflow_rc.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_rc.csv");
 
     Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
 
@@ -149,6 +171,7 @@ bool ModelCreator::Create(model_parameters, System *system)
     link2.SetVal("flow", 10);
     system->AddLink(link2, "Settling element (1)", "fixed_head (1)", false);
 
+    system->SetProp("tend",100); //done!
     cout<<"Populate functions"<<endl;
     system->PopulateOperatorsFunctions();
     cout<<"Variable parents"<<endl;
