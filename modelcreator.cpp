@@ -2,11 +2,13 @@
 #include "System.h"
 #include "QString"
 #include <iostream>
+#include <fstream>
+#include <vector>
+
 using namespace std;
 
 ModelCreator::ModelCreator()
 {
-
 }
 
 
@@ -18,6 +20,8 @@ bool ModelCreator::Create(model_parameters, System *system)
     system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/wastewater.json");
     system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/mass_transfer.json");
     system->ReadSystemSettingsTemplate("/home/behzad/Projects/OpenHydroQual/resources/settings.json");
+
+    const double Simulation_time=100; // Simulation Time in Days
 
     Constituent Solids;
     Solids.SetQuantities(system, "Constituent");
@@ -72,7 +76,7 @@ bool ModelCreator::Create(model_parameters, System *system)
     Stl_element.SetVal("Coagulant:concentration",0);
 
     CTimeSeries<double> CoagNS;
-    CoagNS.CreateOUProcess(0,100,0.05,1);
+    CoagNS.CreateOUProcess(0,Simulation_time,0.05,1);
     CoagNS.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/coagulant_mfr_NS.csv");
     vector<double> c_params; c_params.push_back(2.5); c_params.push_back(0.6);
     CTimeSeries<double> Coag = CoagNS.MapfromNormalScoreToDistribution("lognormal", c_params);
@@ -114,7 +118,7 @@ bool ModelCreator::Create(model_parameters, System *system)
     Reactor.SetVal("y",400);
 
     CTimeSeries<double> SolidConcentrationNS;
-    SolidConcentrationNS.CreateOUProcess(0,100,0.05,1);
+    SolidConcentrationNS.CreateOUProcess(0,Simulation_time,0.05,1);
     SolidConcentrationNS.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration_NS.csv");
     vector<double> params; params.push_back(3); params.push_back(1);
     CTimeSeries<double> SolidConcentration = SolidConcentrationNS.MapfromNormalScoreToDistribution("lognormal", params);
@@ -133,45 +137,72 @@ bool ModelCreator::Create(model_parameters, System *system)
     Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
     */
 
+    // ----- Producing Constant Random Inflow -----
 
-    // Providing a seed value
-    srand((unsigned) time(NULL));
+    // Seed the random number generator with the current time
+    srand(time(0));
 
-    // Get a random number
-    int random = rand();
+    /*// Generate a random number between 1 and 10
+    int r_inflow = rand() % 10 + 1;*/
 
-    int scaled_random=10*random;
+    // Generate a random double between 0 and 1
+    double randomValue = (double)rand() / RAND_MAX;
 
-    int inflow_rc[2][2];
+    // Scale the random value to the range 1-10
+    double r_inflow = randomValue * 9 + 1;
 
-    inflow_rc[0][0]= 0;
-    inflow_rc[0][1]= 0;
-    inflow_rc[1][0]= 100;
-    inflow_rc[1][1]= scaled_random;
+    const int ROWS = 2;
+    const int COLS = 2;
+    double inflow_m[ROWS][COLS] = {
+        {0, r_inflow},
+        {Simulation_time, r_inflow},
+    };
 
-    inflow_rc.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_rc.csv");
+    ofstream outfile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
 
-    Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
+    //ofstream outfile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
+
+
+    if (!outfile.is_open()) {
+        cerr << "Error opening file!" << endl;
+        //return 1;
+    }
+
+    // Write the array to the file
+    for (int i = 0; i < ROWS; ++i) {
+        for (int j = 0; j < COLS; ++j) {
+            outfile << inflow_m[i][j] << ",";
+        }
+        outfile << endl;
+    }
+
+    outfile.close();
+
+    cout << "Array written to file successfully!" << endl;
+
+        //return 0;
+
+    Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
 
     system->AddBlock(Reactor,false);
-    //system->block("Reactor (1)")->SetProperty("Solids:inflow_concentration","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow_concentration.txt");
+
     //system->block("Reactor (1)")->SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
 
     Link link1;
     link1.SetQuantities(system, "Fixed flow");
     link1.SetName("Reactor (1) - Settling element (1)");
     link1.SetType("Fixed flow");
-    link1.SetVal("flow", 10);
+    link1.SetVal("flow", r_inflow);
     system->AddLink(link1, "Reactor (1)", "Settling element (1)", false);
 
     Link link2;
     link2.SetQuantities(system, "Fixed flow");
     link2.SetName("Settling element (1) - fixed_head (1)");
     link2.SetType("Fixed flow");
-    link2.SetVal("flow", 10);
+    link2.SetVal("flow", r_inflow);
     system->AddLink(link2, "Settling element (1)", "fixed_head (1)", false);
 
-    system->SetProp("tend",100); //done!
+    system->SetProp("tend",Simulation_time); // Simulation time in Days!
     cout<<"Populate functions"<<endl;
     system->PopulateOperatorsFunctions();
     cout<<"Variable parents"<<endl;
