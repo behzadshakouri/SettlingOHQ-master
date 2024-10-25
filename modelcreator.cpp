@@ -151,7 +151,11 @@ bool ModelCreator::Create(model_parameters, System *system)
     // Scale the random value to the range 1-10
     double r_inflow = randomValue * 9 + 1;
 
-    const int ROWS = 2;
+    CTimeSeries<double> inflow_timeseries;
+    inflow_timeseries.CreateConstant(0,Simulation_time, r_inflow);
+    inflow_timeseries.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
+
+    /*const int ROWS = 2;
     const int COLS = 2;
     double inflow_m[ROWS][COLS] = {
         {0, r_inflow},
@@ -180,7 +184,7 @@ bool ModelCreator::Create(model_parameters, System *system)
 
     cout << "Array written to file successfully!" << endl;
 
-        //return 0;
+        //return 0;*/
 
     Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
 
@@ -202,7 +206,8 @@ bool ModelCreator::Create(model_parameters, System *system)
     link2.SetVal("flow", r_inflow);
     system->AddLink(link2, "Settling element (1)", "fixed_head (1)", false);
 
-    system->SetProp("tend",Simulation_time); // Simulation time in Days!
+    system->SetSettingsParameter("simulation_end_time",Simulation_time);
+    system->SetSystemSettings();
     cout<<"Populate functions"<<endl;
     system->PopulateOperatorsFunctions();
     cout<<"Variable parents"<<endl;
