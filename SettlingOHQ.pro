@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 
 CONFIG += c++14
 
+DEFINE += GSL
 
 CONFIG += Behzad
 DEFINES += Behzad
