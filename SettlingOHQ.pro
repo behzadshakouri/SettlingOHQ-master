@@ -9,7 +9,7 @@ CONFIG -= app_bundle
 
 CONFIG += c++14
 
-DEFINE += GSL
+DEFINES += GSL
 
 CONFIG += Behzad
 DEFINES += Behzad
@@ -32,7 +32,7 @@ Behzad {
     #VTK_V = -9.0
 #}
 
-DEFINES += use_VTK ARMA_USE_SUPERLU
+DEFINES += use_VTK ARMA_USE_SUPERLU _ARMA
 CONFIG += use_VTK
 
 INCLUDEPATH += $$OHQPATH/include
