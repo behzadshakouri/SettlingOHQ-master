@@ -155,6 +155,8 @@ bool ModelCreator::Create(model_parameters, System *system)
     inflow_timeseries.CreateConstant(0,Simulation_time, r_inflow);
     inflow_timeseries.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
 
+
+
     /*const int ROWS = 2;
     const int COLS = 2;
     double inflow_m[ROWS][COLS] = {
@@ -205,6 +207,33 @@ bool ModelCreator::Create(model_parameters, System *system)
     link2.SetType("Fixed flow");
     link2.SetVal("flow", r_inflow);
     system->AddLink(link2, "Settling element (1)", "fixed_head (1)", false);
+
+    Observation s_inflow_concentration;
+
+    s_inflow_concentration.SetQuantities(system, "Observation");
+    s_inflow_concentration.SetProperty("expression","Solids:inflow_concentration");
+    s_inflow_concentration.SetProperty("object","Reactor (1)");
+    s_inflow_concentration.SetName("SolidsInflowConcentration");
+    s_inflow_concentration.SetType("Observation");
+    system->AddObservation(s_inflow_concentration,false);
+
+    Observation coagulant_concentration;
+
+    coagulant_concentration.SetQuantities(system, "Observation");
+    coagulant_concentration.SetProperty("expression","Coagulant:external_mass_flow_timeseries");
+    coagulant_concentration.SetProperty("object","Settling element (1)");
+    coagulant_concentration.SetName("Coagulant_Concentration");
+    coagulant_concentration.SetType("Observation");
+    system->AddObservation(coagulant_concentration,false);
+
+    Observation solids_concentration;
+
+    solids_concentration.SetQuantities(system, "Observation");
+    solids_concentration.SetProperty("expression","Solids:concentration");
+    solids_concentration.SetProperty("object","Settling element (1)");
+    solids_concentration.SetName("Solids_Concentration");
+    solids_concentration.SetType("Observation");
+    system->AddObservation(solids_concentration,false);
 
     system->SetSettingsParameter("simulation_end_time",Simulation_time);
     system->SetSystemSettings();

@@ -27,7 +27,9 @@ int main(int argc, char *argv[])
     OUEx2Exp.writefile("/home/behzad/Projects/Settling_Models/OUEx2Exp.txt");
 */
 
+
     model_parameters mp;
+/*
     mp.nr = 6;
     mp.nz = 6;
     mp.K_sat = 1;
@@ -37,6 +39,7 @@ int main(int argc, char *argv[])
     mp.theta_sat = 0.4;
     mp.theta_r = 0.05;
     mp.initial_theta = 0.2;
+*/
 
     System *system=new System();
     ModelCreator ModCreate;
@@ -51,9 +54,14 @@ int main(int argc, char *argv[])
 
     cout<<"Solving ..."<<endl;
     system->Solve();
+
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
     CTimeSeriesSet<double> output = system->GetOutputs();
     output.writetofile(system->GetWorkingFolder() + system->OutputFileName());
+
+    CTimeSeriesSet<double> selectedoutput = system->GetObservedOutputs();
+    selectedoutput.writetofile(system->GetWorkingFolder() + system->ObservedOutputFileName());
+
     cout<<"Getting results into grid"<<endl;
     ResultGrid resgrid(output,"theta",system);
     //cout<<"Writing VTPs"<<endl;
