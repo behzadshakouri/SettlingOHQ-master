@@ -175,14 +175,14 @@ bool ModelCreator::Create(System *system)
     link2.SetVal("flow", r_inflow);
     system->AddLink(link2, "Settling element (1)", "fixed_head (1)", false);
 
-    Observation constant_inflow;
+    Observation total_inflow;
 
-    constant_inflow.SetQuantities(system, "Observation");
-    constant_inflow.SetProperty("expression","inflow");
-    constant_inflow.SetProperty("object","Reactor (1)");
-    constant_inflow.SetName("Inflow");
-    constant_inflow.SetType("Observation");
-    system->AddObservation(constant_inflow,false);
+    total_inflow.SetQuantities(system, "Observation");
+    total_inflow.SetProperty("expression","inflow");
+    total_inflow.SetProperty("object","Reactor (1)");
+    total_inflow.SetName("Inflow");
+    total_inflow.SetType("Observation");
+    system->AddObservation(total_inflow,false);
 
 
     Observation s_inflow_concentration;

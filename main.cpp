@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     string Workingfolder="/home/behzad/Projects/Settling_Models/";
     ModelCreator ModCreate;
-    for (int i=0; i<3; i++)
+    for (int i=0; i<100; i++)
     {
         System *system=new System();
         system->Clear();
