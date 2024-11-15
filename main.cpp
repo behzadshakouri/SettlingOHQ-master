@@ -9,6 +9,7 @@
 int main(int argc, char *argv[])
 {
 
+    string Workingfolder="/home/behzad/Projects/Settling_Models/";
     ModelCreator ModCreate;
     for (int i=0; i<3; i++)
     {
@@ -18,10 +19,10 @@ int main(int argc, char *argv[])
         ModCreate.Create(system);
         cout<<"Creating model done..." <<endl;
 
-        system->SetWorkingFolder("/home/behzad/Projects/Settling_Models/");
+        system->SetWorkingFolder(Workingfolder);
         system->SetSilent(false);
         cout<<"Saving"<<endl;
-        system->SavetoScriptFile("/home/behzad/Projects/Settling_Models/CreatedModel.ohq");
+        system->SavetoScriptFile(Workingfolder + "CreatedModel.ohq");
 
         cout<<"Solving ..."<<endl;
         system->Solve();
