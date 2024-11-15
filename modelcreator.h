@@ -28,7 +28,7 @@ class ModelCreator
 {
 public:
     ModelCreator();
-    bool Create(model_parameters mp, System *system);
+    bool Create(System *system);
 
 private:
     const double pi = 3.141521;

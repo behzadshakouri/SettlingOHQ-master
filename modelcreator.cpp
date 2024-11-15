@@ -12,7 +12,7 @@ ModelCreator::ModelCreator()
 }
 
 
-bool ModelCreator::Create(model_parameters, System *system)
+bool ModelCreator::Create(System *system)
 {
     system->GetQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/main_components.json");
     //system->AppendQuanTemplate("/home/behzad/Projects/OpenHydroQual/resources/unsaturated_soil.json");
@@ -155,40 +155,7 @@ bool ModelCreator::Create(model_parameters, System *system)
     inflow_timeseries.CreateConstant(0,Simulation_time, r_inflow);
     inflow_timeseries.writefile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
 
-
-
-    /*const int ROWS = 2;
-    const int COLS = 2;
-    double inflow_m[ROWS][COLS] = {
-        {0, r_inflow},
-        {Simulation_time, r_inflow},
-    };
-
-    ofstream outfile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
-
-    //ofstream outfile("/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.txt");
-
-
-    if (!outfile.is_open()) {
-        cerr << "Error opening file!" << endl;
-        //return 1;
-    }
-
-    // Write the array to the file
-    for (int i = 0; i < ROWS; ++i) {
-        for (int j = 0; j < COLS; ++j) {
-            outfile << inflow_m[i][j] << ",";
-        }
-        outfile << endl;
-    }
-
-    outfile.close();
-
-    cout << "Array written to file successfully!" << endl;
-
-        //return 0;*/
-
-    Reactor.SetProperty("inflow","/home/behzad/Projects/SettlingOHQ-master/Settling/inflow.csv");
+    Reactor.SetVal("constant_inflow",r_inflow);
 
     system->AddBlock(Reactor,false);
 
@@ -207,6 +174,16 @@ bool ModelCreator::Create(model_parameters, System *system)
     link2.SetType("Fixed flow");
     link2.SetVal("flow", r_inflow);
     system->AddLink(link2, "Settling element (1)", "fixed_head (1)", false);
+
+    Observation constant_inflow;
+
+    constant_inflow.SetQuantities(system, "Observation");
+    constant_inflow.SetProperty("expression","inflow");
+    constant_inflow.SetProperty("object","Reactor (1)");
+    constant_inflow.SetName("Inflow");
+    constant_inflow.SetType("Observation");
+    system->AddObservation(constant_inflow,false);
+
 
     Observation s_inflow_concentration;
 

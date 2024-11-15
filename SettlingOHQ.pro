@@ -39,7 +39,7 @@ INCLUDEPATH += $$OHQPATH/include
 INCLUDEPATH += $$OHQPATH/src
 INCLUDEPATH += $$OHQPATH/include/GA
 INCLUDEPATH += $$OHQPATH/include/MCMC
-INCLUDEPATH += ../jsoncpp/include/
+INCLUDEPATH += ../../jsoncpp/include/
 
 
 
@@ -132,9 +132,9 @@ SOURCES += \
         $$OHQPATH/src/GA/Individual.cpp \
         $$OHQPATH/src/GA/DistributionNUnif.cpp \
         $$OHQPATH/src/GA/Distribution.cpp \
-        ../jsoncpp/src/lib_json/json_reader.cpp \
-        ../jsoncpp/src/lib_json/json_value.cpp \
-        ../jsoncpp/src/lib_json/json_writer.cpp \
+        ../../jsoncpp/src/lib_json/json_reader.cpp \
+        ../../jsoncpp/src/lib_json/json_value.cpp \
+        ../../jsoncpp/src/lib_json/json_writer.cpp \
         main.cpp \
         modelcreator.cpp \
         resultgrid.cpp
@@ -172,19 +172,19 @@ HEADERS += \
     $$OHQPATH/include/System.h \
     $$OHQPATH/include/Vector.h \
     $$OHQPATH/include/Vector_arma.h \
-    ../jsoncpp/include/json/allocator.h \
-    ../jsoncpp/include/json/assertions.h \
-    ../jsoncpp/include/json/autolink.h \
-    ../jsoncpp/include/json/config.h \
-    ../jsoncpp/include/json/features.h \
-    ../jsoncpp/include/json/forwards.h \
-    ../jsoncpp/include/json/json.h \
-    ../jsoncpp/include/json/reader.h \
-    ../jsoncpp/include/json/value.h \
-    ../jsoncpp/include/json/version.h \
-    ../jsoncpp/include/json/writer.h \
-    ../jsoncpp/src/lib_json/json_tool.h \
-    ../jsoncpp/src/lib_json/version.h.in \
+    ../../jsoncpp/include/json/allocator.h \
+    ../../jsoncpp/include/json/assertions.h \
+    ../../jsoncpp/include/json/autolink.h \
+    ../../jsoncpp/include/json/config.h \
+    ../../jsoncpp/include/json/features.h \
+    ../../jsoncpp/include/json/forwards.h \
+    ../../jsoncpp/include/json/json.h \
+    ../../jsoncpp/include/json/reader.h \
+    ../../jsoncpp/include/json/value.h \
+    ../../jsoncpp/include/json/version.h \
+    ../../jsoncpp/include/json/writer.h \
+    ../../jsoncpp/src/lib_json/json_tool.h \
+    ../../jsoncpp/src/lib_json/version.h.in \
     $$OHQPATH/include/Parameter.h \
     $$OHQPATH/include/Parameter_Set.h \
     $$OHQPATH/include/Command.h \

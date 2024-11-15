@@ -9,7 +9,56 @@
 int main(int argc, char *argv[])
 {
 
-    /*CTimeSeries<double> OUEx1, OUEx2;
+    ModelCreator ModCreate;
+    for (int i=0; i<3; i++)
+    {
+        System *system=new System();
+        system->Clear();
+        cout<<"Creating model "<< i << " ..." <<endl;
+        ModCreate.Create(system);
+        cout<<"Creating model done..." <<endl;
+
+        system->SetWorkingFolder("/home/behzad/Projects/Settling_Models/");
+        system->SetSilent(false);
+        cout<<"Saving"<<endl;
+        system->SavetoScriptFile("/home/behzad/Projects/Settling_Models/CreatedModel.ohq");
+
+        cout<<"Solving ..."<<endl;
+        system->Solve();
+
+        cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
+        CTimeSeriesSet<double> output = system->GetOutputs();
+        QString outputfilename = QString::fromStdString(system->OutputFileName()).split(".")[0] +"_" + QString::number(i) + ".txt";
+        output.writetofile(system->GetWorkingFolder() + outputfilename.toStdString());
+
+        cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->ObservedOutputFileName() +"'"<<endl;
+        CTimeSeriesSet<double> selectedoutput = system->GetObservedOutputs();
+        QString selectedoutputfilename = QString::fromStdString(system->ObservedOutputFileName()).split(".")[0] +"_" + QString::number(i) + ".txt";
+        selectedoutput.writetofile(system->GetWorkingFolder() + selectedoutputfilename.toStdString());
+
+        cout<<"Getting results into grid"<<endl;
+        ResultGrid resgrid(output,"theta",system);
+        //cout<<"Writing VTPs"<<endl;
+        //resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
+        delete system;
+    }
+
+    return 0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*CTimeSeries<double> OUEx1, OUEx2;
     OUEx1.CreateOUProcess(0,10,0.05,0.2);
     OUEx2.CreateOUProcess(0,10,0.05,5);
     vector<double> logparams; logparams.push_back(1); logparams.push_back(0.5);
@@ -26,47 +75,3 @@ int main(int argc, char *argv[])
     OUEx1Exp.writefile("/home/behzad/Projects/Settling_Models/OUEx1Exp.txt");
     OUEx2Exp.writefile("/home/behzad/Projects/Settling_Models/OUEx2Exp.txt");
 */
-
-
-    model_parameters mp;
-/*
-    mp.nr = 6;
-    mp.nz = 6;
-    mp.K_sat = 1;
-    mp.alpha = 20;
-    mp.n = 1.8;
-    mp.rw = 0.1;
-    mp.theta_sat = 0.4;
-    mp.theta_r = 0.05;
-    mp.initial_theta = 0.2;
-*/
-
-    System *system=new System();
-    ModelCreator ModCreate;
-    cout<<"Creating model ..." <<endl;
-    ModCreate.Create(mp,system);
-    cout<<"Creating model done..." <<endl;
-
-    system->SetWorkingFolder("/home/behzad/Projects/Settling_Models/");
-    system->SetSilent(false);
-    cout<<"Saving"<<endl;
-    system->SavetoScriptFile("/home/behzad/Projects/Settling_Models/CreatedModel.ohq");
-
-    cout<<"Solving ..."<<endl;
-    system->Solve();
-
-    cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
-    CTimeSeriesSet<double> output = system->GetOutputs();
-    output.writetofile(system->GetWorkingFolder() + system->OutputFileName());
-
-    CTimeSeriesSet<double> selectedoutput = system->GetObservedOutputs();
-    selectedoutput.writetofile(system->GetWorkingFolder() + system->ObservedOutputFileName());
-
-    cout<<"Getting results into grid"<<endl;
-    ResultGrid resgrid(output,"theta",system);
-    //cout<<"Writing VTPs"<<endl;
-    //resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
-
-    return 0;
-
-}
