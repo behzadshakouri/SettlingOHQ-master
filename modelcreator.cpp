@@ -69,11 +69,11 @@ bool ModelCreator::Create(System *system)
     system->AddReaction(Settling,false);
 
 
-    Block Stl_element;
-    Stl_element.SetQuantities(system, "Settling element");
-    Stl_element.SetName("Settling element (1)");
-    Stl_element.SetType("Settling element");
-    Stl_element.SetVal("Coagulant:concentration",0);
+    Block Stl_comp;
+    Stl_comp.SetQuantities(system, "Settling compartment");
+    Stl_comp.SetName("Settling compartment (1)");
+    Stl_comp.SetType("Settling compartment");
+    Stl_comp.SetVal("Coagulant:concentration",0);
 
     CTimeSeries<double> CoagNS;
     CoagNS.CreateOUProcess(0,Simulation_time,0.05,1);
@@ -82,17 +82,17 @@ bool ModelCreator::Create(System *system)
     CTimeSeries<double> Coag = CoagNS.MapfromNormalScoreToDistribution("lognormal", c_params);
     //Reactor.Variable("Coagulant:external_mass_flow_timeseries")->SetTimeSeries(Coag);
     Coag.writefile("/home/behzad/Projects/Settling_Models/coagulant_mfr.csv");
-    Stl_element.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/Settling_Models/coagulant_mfr.csv");
+    Stl_comp.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/Settling_Models/coagulant_mfr.csv");
 
-    //Stl_element.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/Settling_Models/coagulant_mfr.txt");
+    //Stl_comp.SetProperty("Coagulant:external_mass_flow_timeseries","/home/behzad/Projects/Settling_Models/coagulant_mfr.txt");
 
-    Stl_element.SetVal("Settled_Particles:concentration",0);
-    Stl_element.SetVal("Solids:concentration",0);
-    Stl_element.SetVal("Storage",20);
-    Stl_element.SetVal("bottom_elevation",0);
-    Stl_element.SetVal("x",800);
-    Stl_element.SetVal("y",800);
-    system->AddBlock(Stl_element,false);
+    Stl_comp.SetVal("Settled_Particles:concentration",0);
+    Stl_comp.SetVal("Solids:concentration",0);
+    Stl_comp.SetVal("Storage",20);
+    Stl_comp.SetVal("bottom_elevation",0);
+    Stl_comp.SetVal("x",800);
+    Stl_comp.SetVal("y",800);
+    system->AddBlock(Stl_comp,false);
 
     Block f_head;
     f_head.SetQuantities(system, "fixed_head");
@@ -163,17 +163,17 @@ bool ModelCreator::Create(System *system)
 
     Link link1;
     link1.SetQuantities(system, "Fixed flow");
-    link1.SetName("Reactor (1) - Settling element (1)");
+    link1.SetName("Reactor (1) - Settling compartment (1)");
     link1.SetType("Fixed flow");
     link1.SetVal("flow", r_inflow);
-    system->AddLink(link1, "Reactor (1)", "Settling element (1)", false);
+    system->AddLink(link1, "Reactor (1)", "Settling compartment (1)", false);
 
     Link link2;
     link2.SetQuantities(system, "Fixed flow");
-    link2.SetName("Settling element (1) - fixed_head (1)");
+    link2.SetName("Settling compartment (1) - fixed_head (1)");
     link2.SetType("Fixed flow");
     link2.SetVal("flow", r_inflow);
-    system->AddLink(link2, "Settling element (1)", "fixed_head (1)", false);
+    system->AddLink(link2, "Settling compartment (1)", "fixed_head (1)", false);
 
     Observation total_inflow;
 
@@ -198,7 +198,7 @@ bool ModelCreator::Create(System *system)
 
     coagulant_concentration.SetQuantities(system, "Observation");
     coagulant_concentration.SetProperty("expression","Coagulant:external_mass_flow_timeseries");
-    coagulant_concentration.SetProperty("object","Settling element (1)");
+    coagulant_concentration.SetProperty("object","Settling compartment (1)");
     coagulant_concentration.SetName("Coagulant_Concentration");
     coagulant_concentration.SetType("Observation");
     system->AddObservation(coagulant_concentration,false);
@@ -207,7 +207,7 @@ bool ModelCreator::Create(System *system)
 
     solids_concentration.SetQuantities(system, "Observation");
     solids_concentration.SetProperty("expression","Solids:concentration");
-    solids_concentration.SetProperty("object","Settling element (1)");
+    solids_concentration.SetProperty("object","Settling compartment (1)");
     solids_concentration.SetName("Solids_Concentration");
     solids_concentration.SetType("Observation");
     system->AddObservation(solids_concentration,false);
