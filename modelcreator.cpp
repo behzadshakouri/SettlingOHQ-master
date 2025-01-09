@@ -124,7 +124,7 @@ bool ModelCreator::Create(System *system)
     CTimeSeries<double> SolidConcentration = SolidConcentrationNS.MapfromNormalScoreToDistribution("lognormal", params);
     //Reactor.Variable("Solids:inflow_concentration")->SetTimeSeries(SolidConcentration);
     SolidConcentration.writefile("/home/behzad/Projects/Settling_Models/inflow_concentration.csv");
-    Reactor.SetProperty("Solids:inflow_concentration","/home/behzad/Projects/Settling_Models/inflow_concentration.csv");
+    Reactor.SetProperty("Solids:time_variable_inflow_concentration","/home/behzad/Projects/Settling_Models/inflow_concentration.csv");
 
     //Reactor.SetProperty("Solids:inflow_concentration","/home/behzad/Projects/Settling_Models/inflow_concentration.txt");
 
